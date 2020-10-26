@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class PGMFile {
     private String magicNumber;
@@ -14,9 +13,10 @@ public class PGMFile {
     private int sizeH;
     private int maxGrayValue;
 
-    private Scanner actualLine;
+    //private Scanner actualLine;
 
-    private AtomicInteger[][] image;
+    //private AtomicInteger[][] image;
+    private MatrixImage image;
     private File file;
 
     private String name;
@@ -47,7 +47,9 @@ public class PGMFile {
 
         maxGrayValue = Integer.parseInt(fileBuffered.readLine());
 
-        image = new AtomicInteger[sizeH][sizeW];
+        //image = new AtomicInteger[sizeH][sizeW];
+        image = new MatrixImage(sizeH,sizeW);
+
         byte[][] im = new byte[sizeH][sizeW];
 
         int count = 0;
@@ -74,23 +76,28 @@ public class PGMFile {
 
             // read the image data
 
-            for (int i = 0; i < sizeH; i++) {
+            /*for (int i = 0; i < sizeH; i++) {
                 for (int j = 0; j < sizeW; j++) {
                     image[i][j] = new AtomicInteger(dis.readUnsignedByte());
                 }
-            }
+            }*/
+            image.fillMatrixP5(dis);
+
+
         }
 
         if (magicNumber.equals("P2")){
-            actualLine = new Scanner(fileBuffered.readLine());
-            for (int i = 0; i<sizeH; i++) {
+            //actualLine = new Scanner(fileBuffered.readLine());
+            /*for (int i = 0; i<sizeH; i++) {
                 for (int j = 0; j<sizeW; j++) {
                     if (!actualLine.hasNext()){
                         actualLine = new Scanner(fileBuffered.readLine());
                     }
                     image[i][j] = new AtomicInteger(actualLine.nextInt());
                 }
-            }
+            }*/
+            image.fillMatrixP2(fileBuffered);
+            //print();
         }
     }
 
@@ -105,12 +112,15 @@ public class PGMFile {
         System.out.println(maxGrayValue);
 
         //Se imprimen los valores
-        for (int i=0;i<sizeH;i++){
+        /*for (int i=0;i<sizeH;i++){
             for(int j=0;j<sizeW;j++){
-                System.out.print(image[i][j] + " ");
+                //System.out.print(image[i][j] + " ");
+                System.out.print(image.getAtomicInt(i,j) + " ");
             }
             System.out.println();
-        }
+        }*/
+        image.printMatrix();
+
 
     }
 
@@ -131,7 +141,8 @@ public class PGMFile {
                 //Se escriben los valores
                 for (int i = 0; i < sizeH; i++) {
                     for (int j = 0; j < sizeW; j++) {
-                        out.write(Integer.toString(image[i][j].get()));
+                        //out.write(Integer.toString(image[i][j].get()));
+                        out.write(Integer.toString(image.getAtomicInt(i,j).get()));
                         if (j != sizeW - 1)
                             out.write(" ");
                     }
@@ -196,10 +207,6 @@ public class PGMFile {
         return maxGrayValue;
     }
 
-    public AtomicInteger[][] getImage() {
-        return image;
-    }
-
     public void setMagicNumber(String magicNumber) {
         this.magicNumber = magicNumber;
     }
@@ -220,7 +227,11 @@ public class PGMFile {
         this.maxGrayValue = maxGrayValue;
     }
 
-    public void setImage(AtomicInteger[][] image) {
+    public MatrixImage getImage() {
+        return image;
+    }
+
+    public void setImage(MatrixImage image) {
         this.image = image;
     }
 }
