@@ -34,7 +34,6 @@ public class ImageProcessor {
                 for (int j = 0; j < totalColumns; j++) {
                     imageTemp[i][j]=matrixImage[i][j].get();
                 }
-                System.out.println();
             }
 
             for (int actualRow=1; actualRow<totalRows-1; actualRow++){
