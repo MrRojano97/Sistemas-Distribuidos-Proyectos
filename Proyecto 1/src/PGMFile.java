@@ -124,67 +124,37 @@ public class PGMFile {
 
     }
 
-    public void save(String magicNumber) {
+    public void save() {
 
-        if (magicNumber.equals("P2")) {
-            try {
-                FileWriter fstream = new FileWriter(name + " outP2.pgm");
-                BufferedWriter out = new BufferedWriter(fstream);
 
-                //Se escribe la cabecera
-                if (comment != "") {
-                    out.write(magicNumber + "\n" + comment + "\n" + size + "\n" + maxGrayValue + "\n");
-                } else {
-                    out.write(magicNumber + "\n" + size + "\n" + maxGrayValue + "\n");
-                }
+        try {
+            FileWriter fstream = new FileWriter(name + "_out_P2.pgm");
+            BufferedWriter out = new BufferedWriter(fstream);
 
-                //Se escriben los valores
-                for (int i = 0; i < sizeH; i++) {
-                    for (int j = 0; j < sizeW; j++) {
-                        //out.write(Integer.toString(image[i][j].get()));
-                        out.write(Integer.toString(image.getAtomicInt(i,j).get()));
-                        if (j != sizeW - 1)
-                            out.write(" ");
-                    }
-                    if (i != sizeH - 1)
-                        out.write("\n");
-                }
-                out.close();
-            } catch (Exception e) {
-                System.err.println("Error : " + e.getMessage());
+            //Se escribe la cabecera
+            if (comment != "") {
+                out.write("P2" + "\n" + comment + "\n" + size + "\n" + maxGrayValue + "\n");
+            } else {
+                out.write("P2" + "\n" + size + "\n" + maxGrayValue + "\n");
             }
 
-        }
-        if (magicNumber.equals("P5")) {
-            try {
-                FileWriter fstream = new FileWriter(name + " outP5.pgm");
-                BufferedWriter out = new BufferedWriter(fstream);
-
-                //Se escribe la cabecera
-                if (comment != "") {
-                    out.write(magicNumber + "\n" + comment + "\n" + size + "\n" + maxGrayValue + "\n");
-                } else {
-                    out.write(magicNumber + "\n" + size + "\n" + maxGrayValue + "\n");
+            //Se escriben los valores
+            for (int i = 0; i < sizeH; i++) {
+                for (int j = 0; j < sizeW; j++) {
+                    //out.write(Integer.toString(image[i][j].get()));
+                    out.write(Integer.toString(image.getAtomicInt(i,j).get()));
+                    if (j != sizeW - 1)
+                        out.write(" ");
                 }
-
-                //Se escriben los valores
-                int count = 0;
-                for (int i = 0; i < sizeH; i++) {
-                    for (int j = 0; j < sizeW; j++) {
-                        //?????
-
-                        if (j!= sizeW - 1)
-                            out.write(" ");
-                    }
-                    if (i!= sizeH - 1)
-                        out.write("\n");
-
-                }
-                out.close();
-            } catch (Exception e) {
-                System.err.println("Error : " + e.getMessage());
+                if (i != sizeH - 1)
+                    out.write("\n");
             }
+            out.close();
+        } catch (Exception e) {
+            System.err.println("Error : " + e.getMessage());
         }
+
+
     }
 
     public String getMagicNumber() {
