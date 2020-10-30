@@ -1,25 +1,60 @@
+import java.util.ArrayList;
 import java.util.SortedMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ImageProcessor {
 
     private MatrixImage image;
+    private AtomicInteger matrixImage[][];
     private String tech_selected;
     private int nstruct_selected;
     private final Integer[][] structs = {{0,0,0,1,1,0}, {1,0,0,0,1,1},{1,0,0,0,2,0},
             {0,0,0,1},{1,1,0,0,0,2,2,0,2,2}};
     private ConcurrentProcessImage[] concurrentProcess;
     private int numThreads;
+    private Integer[][] imageTemp;
 
-
-    public ImageProcessor(String tech_selected, int struct_selected, MatrixImage imagen) {
+    public ImageProcessor(String tech_selected, int struct_selected, MatrixImage imagen) throws InterruptedException {
         System.out.print("Iniciando procesador de imagenes..");
         this.tech_selected = tech_selected;
         this.nstruct_selected = struct_selected-1;
-        image = imagen;
 
-        System.out.println("done!");
+        matrixImage = imagen.getMatrix();
 
-        runTech();
+        if (this.tech_selected.equals("erosion")){
+            ArrayList<Erosion> thread = new ArrayList<Erosion>();
+            int totalRows = imagen.getRows();
+            int totalColumns=imagen.getColumns();
+
+            //Pasando Matriz a una temporal
+            imageTemp=new Integer[totalRows][totalColumns];
+
+
+            for (int i = 0; i < totalRows; i++) {
+                for (int j = 0; j < totalColumns; j++) {
+                    imageTemp[i][j]=matrixImage[i][j].get();
+                }
+                System.out.println();
+            }
+
+            for (int actualRow=1; actualRow<totalRows-1; actualRow++){
+                thread.add(new Erosion(imageTemp, matrixImage,actualRow,totalColumns,0));
+            }
+            int actualThread=0;
+
+            while (actualThread<thread.size()){
+                thread.get(actualThread).run();
+                actualThread++;
+            }
+        }
+
+        else {
+            System.out.println("done!");
+
+            runTech();
+
+        }
+
 
     }
 

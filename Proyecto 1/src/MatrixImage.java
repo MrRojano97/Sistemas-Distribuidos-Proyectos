@@ -20,7 +20,7 @@ public class MatrixImage {
     }
 
     public void fillMatrixP5(DataInputStream dis){
-        System.out.print("Llenando matriz P5..");
+        System.out.print("Transformando a P2 y llenando matriz...");
         for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < columns; j++) {
                     try {
