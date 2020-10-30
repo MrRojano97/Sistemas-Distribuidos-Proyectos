@@ -31,7 +31,7 @@ public class Erosion extends Thread{
                 val1=originalMatrix[row_assigned-1][actualColumn];
                 val2=originalMatrix[row_assigned][actualColumn-1];
                 val3=originalMatrix[row_assigned+1][actualColumn];
-                val4=originalMatrix[row_assigned+1][actualColumn+1];
+                val4=originalMatrix[row_assigned][actualColumn+1];
 
                 minValue = Integer.min(Integer.min(val1,val2),Integer.min(val3,val4));
                 minValue = Integer.min(focusVal,minValue);
