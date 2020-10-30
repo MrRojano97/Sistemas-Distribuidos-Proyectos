@@ -9,5 +9,16 @@ public class Main {
         file1.save("P2");
         file1.save("P5");
     }
+    /**
+     * public static void main(String[] args) throws IOException {
+     *  switch(args[1]) {
+     *   case "1": new ElementoEstructural1(args[0]);break;
+     *   case "2": new ElementoEstructural2(args[0]);break;
+     *   case "3": new ElementoEstructural3(args[0]);break;
+     *   case "4": new ElementoEstructural4(args[0]);break;
+     *   case "5": new ElementoEstructural5(args[0]);break;
+     *  }
+     *}
+     */
 
 }
