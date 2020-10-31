@@ -60,6 +60,7 @@ public class ImageProcessor {
 
             while (actualThread<thread.size()){
                 thread.get(actualThread).run();
+                //thread.get(actualThread).join();
                 actualThread++;
             }
         }
