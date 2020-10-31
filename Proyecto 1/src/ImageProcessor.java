@@ -22,10 +22,10 @@ public class ImageProcessor {
     - El arreglo tiene 5 listas correspondientes a las 5 estructuras requeridas, para mas informacion consulte el archivo
     de estructuras.png
     */
-    private final Integer[][] structs = {{0,0,0,1,1,0}, {1,0,0,0,1,1},{1,0,0,0,2,0},
+    private final Integer[][] structs = {{1,1,0,1,1,0,1,2,2,1},{0,0,0,1,1,0}, {1,0,0,0,1,1},{1,0,0,0,2,0},
             {0,0,0,1},{1,1,0,0,0,2,2,0,2,2}};
     // Estructura base usada en el ejemplo
-    private final Integer[] structBase = {1,1,0,1,1,0,1,2,2,1};
+
     //Objeto para ejecutar un proceso concurrente (dilatacion o erosion)
     private ConcurrentProcessImage[] concurrentProcess;
     private int numThreads;                 //numero de threads que se crean
@@ -82,43 +82,48 @@ public class ImageProcessor {
         int colMatrix=  image.getColumns();     //cantidad de columnas de la matriz
         int row_assigned;                       //fila asignada a cada estructura para recorrerla
         int id_struct;                          //id de cada estructura para diferenciarlas
-        int num_invalidStructs=0;
-        
+        int threads_no_creates=0;
+
+        //Crear matriz auxiliar para consultar valores (no se actualiza)
+        imageTemp=new Integer[rowsMatrix][colMatrix];
+        for (int i = 0; i < rowsMatrix; i++) {
+            for (int j = 0; j < colMatrix; j++) {
+                imageTemp[i][j]=matrixImage[i][j].get();
+            }
+        }
+
         this.numThreads = rowsMatrix;         //NUmero de hilos a ejecutar segun la cantidad de filas
-        //this.numThreads = 2;                    // cantidad de hilos de prueba, eliminar o comentar en entrega definitiva
+        //this.numThreads = 2;                // cantidad de hilos de prueba, eliminar o comentar en entrega definitiva
         System.out.println("cantidad filas: "+rowsMatrix);
         System.out.println("tecnica de procesamiento elegida: "+tech_selected);
         concurrentProcess = new ConcurrentProcessImage[numThreads]; //Crea una instancia de ejecucion paralela
-        //struct_selected.printInfoStruct();
 
-        for (int i = 0; i < numThreads ; i++) {//Crear hilos
+        //Comienzo el ciclo para crear hilos y estructuras.
+        for (int i = 0; i < numThreads ; i++) {
+
+            //Crear una escructura elegida por el usuario
             id_struct = i+1;
-            Structure struct_selected;
-            if(nstruct_selected==0){
-                //Crear estructura base QUITAR EN IMPLENTACION FINAL, USAR LA DE ARRIBA
-                struct_selected = new Structure(structBase,id_struct);
-            }
-            else{
-                //Crear una escructura con las forma de la elegida por el usuario
-                struct_selected = new Structure(structs[nstruct_selected-1],id_struct);
-            }
+            Structure struct_selected = new Structure(structs[nstruct_selected],id_struct);
 
             //fila asignada para la estructura.
             row_assigned = i;
 
-            struct_selected.setStartPosition(row_assigned);// ubica la estructura en la fila requerida.
+            // ubica la estructura en la fila requerida.
+            struct_selected.setStartPosition(row_assigned);
 
             // si la estructura tiene coordenadas validas, entonces crea un hilo de ejecucion
             if(struct_selected.isStructValid(rowsMatrix,colMatrix)){
-                concurrentProcess[i] = new ConcurrentProcessImage(tech_selected,image,struct_selected,row_assigned);
+                concurrentProcess[i] = new ConcurrentProcessImage(tech_selected, imageTemp,
+                        struct_selected,row_assigned,matrixImage,colMatrix);
                 concurrentProcess[i].start();   //iniciar hilo
             }
             else{
-                num_invalidStructs ++;
+                //contador de ayuda para saber cuantos hilos se omitieron.
+                threads_no_creates ++;
             }
         }
         //Join del hilo principal
-        for (int i = 0; i < numThreads - num_invalidStructs ; i++) {
+        for (int i = 0; i < numThreads - threads_no_creates ; i++) {
             try {
                 concurrentProcess[i].join();
             } catch (InterruptedException e) {

@@ -31,19 +31,6 @@ public class Structure {
     }
 
     /**
-     * Imprime por consola informacion general de la esctuctura, como su id, su tamaño, su pixel de estudio, y sus
-     * demas pixeles con sus respectivos valores.
-     */
-    public void printInfoStruct(){
-        System.out.println("Info Estructura "+id+" size: "+ structure.size());
-        System.out.println("Pixel Estudio: "+getCoord(0).toString());
-        for (int i = 1; i < structure.size() ; i++) {
-            System.out.println("Pixel "+i+": "+getCoord(i).toString());
-        }
-
-    }
-
-    /**
      * Metodo que mueve la estructura y le suma valores a la coordenada J para emular movimiento horizontal
      * @param increase_column factor de incremento horizontal
      * @param limit limite maximo la coordenada J en la matriz
@@ -106,7 +93,18 @@ public class Structure {
         //System.out.println(" es valida!");
         return true;
     }
+    /**
+     * Imprime por consola informacion general de la esctuctura, como su id, su tamaño, su pixel de estudio, y sus
+     * demas pixeles con sus respectivos valores.
+     */
+    public void printInfoStruct(){
+        System.out.println("Info Estructura "+id+" size: "+ structure.size());
+        System.out.println("Pixel Estudio: "+getCoord(0).toString());
+        for (int i = 1; i < structure.size() ; i++) {
+            System.out.println("Pixel "+i+": "+getCoord(i).toString());
+        }
 
+    }
     /**
      * Al igual que printInfoStruct, este metodo imprime una estructura pero en este caso lo hace cuando la estructura
      * es invalida. Asigna un color rojo a la coordenada que es invalida.
