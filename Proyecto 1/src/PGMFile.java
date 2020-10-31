@@ -76,28 +76,12 @@ public class PGMFile {
 
             // read the image data
 
-            /*for (int i = 0; i < sizeH; i++) {
-                for (int j = 0; j < sizeW; j++) {
-                    image[i][j] = new AtomicInteger(dis.readUnsignedByte());
-                }
-            }*/
             image.fillMatrixP5(dis);
-
-
         }
 
         if (magicNumber.equals("P2")){
-            //actualLine = new Scanner(fileBuffered.readLine());
-            /*for (int i = 0; i<sizeH; i++) {
-                for (int j = 0; j<sizeW; j++) {
-                    if (!actualLine.hasNext()){
-                        actualLine = new Scanner(fileBuffered.readLine());
-                    }
-                    image[i][j] = new AtomicInteger(actualLine.nextInt());
-                }
-            }*/
             image.fillMatrixP2(fileBuffered);
-            //print();
+
         }
     }
 

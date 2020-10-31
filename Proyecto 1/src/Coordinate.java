@@ -1,3 +1,7 @@
+/**
+ * Clase que representa una Coordenada (i,j) con su respectivo valor.
+ */
+
 public class Coordinate {
 
     private int i;

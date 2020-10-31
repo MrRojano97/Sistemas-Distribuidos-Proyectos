@@ -15,7 +15,7 @@ public class Main {
         Scanner in = new Scanner(System.in);
         System.out.println("1= erosion, 2= dilatacion. Ingrese opcion: ");
         int techindex = in.nextInt();
-        System.out.println("1= struct1, 2= struct2, .. , 5=struct5. Ingrese opcion: ");
+        System.out.println("0=BASE, 1= struct1, 2= struct2, .. , 5=struct5. Ingrese opcion: ");
         int struct = in.nextInt();
         String tech="";
         if(techindex == 1)
