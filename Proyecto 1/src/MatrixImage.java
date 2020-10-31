@@ -4,21 +4,38 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
+
+/**
+ * Clase que representa la matriz creada por la imagen pgm entrante.
+ */
 public class MatrixImage {
 
     private AtomicInteger[][] matrix;
     private int rows;
     private int columns;
 
+    /**
+     * Constructor de clase, que recibe cantidad de filas y columnas
+     * @param f filas
+     * @param c columnas
+     */
     public MatrixImage(int f, int c) {
         rows = f;
         columns = c;
         matrix = new AtomicInteger[rows][columns];
     }
+
+    /**
+     * Constructor de clase que crea una matriz de ejemplo.
+     */
     public MatrixImage(){
         matrixExample();
     }
 
+    /**
+     * Rellenar la matriz, con datos de la imagen de tipo P5
+     * @param dis
+     */
     public void fillMatrixP5(DataInputStream dis){
         System.out.print("Transformando a P2 y llenando matriz...");
         for (int i = 0; i < rows; i++) {
@@ -32,6 +49,12 @@ public class MatrixImage {
         }
         System.out.println("done!");
     }
+
+    /**
+     * Rellenar la matriz, con datos de la imagen tipo P2
+     * @param fb
+     * @throws IOException
+     */
     public void fillMatrixP2(BufferedReader fb) throws IOException {
         System.out.print("Llenando matriz P2..");
         Scanner actualLine = new Scanner(fb.readLine());
@@ -81,6 +104,10 @@ public class MatrixImage {
         AtomicInteger value = new AtomicInteger(v);
         matrix[i][j] = value;
     }
+
+    /**
+     * Metodo que crea una matriz de 10x10 con fines de prueba. Se rellena con datos predefinidos
+     */
     public void matrixExample(){
         System.out.print("Creando matriz ejemplo..");
         rows = 10;
@@ -98,6 +125,10 @@ public class MatrixImage {
         System.out.println("done!");
 
     }
+
+    /**
+     * Metodo que imprime la matriz.
+     */
     public void printMatrix(){
         for (int i=0;i<rows;i++){
             for(int j=0;j<columns;j++){

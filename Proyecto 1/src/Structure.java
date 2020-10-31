@@ -1,12 +1,23 @@
 import java.util.ArrayList;
 
-public class Structure {
 
+/**
+ * Clase que representa una estructura disponible para recorrer una fila de la matriz, obteniendo los valores en
+ * cada posicion del pixel desde la matriz.
+ */
+public class Structure {
+    //Arreglo de coordenadas tipo (i,j), cada una representa un pixel o casillero.
     private ArrayList<Coordinate> structure;
+    //id de la matriz para identificarla.
     private int id;
 
+    /**
+     * Constructur de la clase
+     * @param listacoordenadas lista de coordenadas de una estructura para transformarla a Coordinates
+     * @param id id de la estructura
+     */
     public Structure(Integer[] listacoordenadas,int id ) {
-        System.out.print("Creando estructura id "+id+"..");
+        //System.out.print("Creando estructura id "+id+"..");
         this.id = id;
         structure = new ArrayList<>();
         for (int i = 0; i < listacoordenadas.length; i++) {
@@ -16,19 +27,13 @@ public class Structure {
                 i++;
             }
         }
-        System.out.println("done!");
+        //System.out.println("done!");
     }
 
-    public Structure(ArrayList<Coordinate> structure){
-        this.structure=structure;
-    }
-
-    public boolean canMoveRightStruct(int i, int j){
-        for (i=0; i<structure.size(); i++){
-
-        }
-        return false;
-    }
+    /**
+     * Imprime por consola informacion general de la esctuctura, como su id, su tamaño, su pixel de estudio, y sus
+     * demas pixeles con sus respectivos valores.
+     */
     public void printInfoStruct(){
         System.out.println("Info Estructura "+id+" size: "+ structure.size());
         System.out.println("Pixel Estudio: "+getCoord(0).toString());
@@ -37,6 +42,12 @@ public class Structure {
         }
 
     }
+
+    /**
+     * Metodo que mueve la estructura y le suma valores a la coordenada J para emular movimiento horizontal
+     * @param increase_column factor de incremento horizontal
+     * @param limit limite maximo la coordenada J en la matriz
+     */
     public void moveStruct(int increase_column, int limit){
         int j;
         for (Coordinate coord: getStruct()) {
@@ -47,6 +58,13 @@ public class Structure {
 
         }
     }
+
+    /**
+     * Metodo que se analiza si es posible realizar un movimiento horizontal y retorna si es o no posible.
+     * @param increase_column factor de incremento horizontal.
+     * @param limit limite maximo de la coordenada J en la matriz.
+     * @return true o false, segun es posible o no mover la estructura horizontalmente.
+     */
     public boolean canMoveStruct(int increase_column, int limit){
         int j;
         for (Coordinate coord: getStruct()) {
@@ -57,27 +75,44 @@ public class Structure {
         }
         return true;
     }
+
+    /**
+     * Ubica una estructura en una fila especifica de la matriz.
+     * @param row fila en donde se desea ubicar la estructura.
+     */
     public void setStartPosition(int row){
         for (Coordinate cord :structure) {
             int i_old = cord.getI();
             cord.setI(i_old + row);
         }
     }
+
+    /**
+     * Analiza si la estructura es valida segun los limites de la matriz, esto quiere decir que si cualquier coordenada
+     * no esta dentro de los limites se considera una coordenada invalida, por lo tanto invalida a la estructura
+     * @param limit1 limite vertical (filas)
+     * @param limit2 limite horizontal (columnas)
+     * @return true o false. Es true si la estructura es valida o false si no lo es.
+     */
     public boolean isStructValid(int limit1, int limit2){
-        System.out.print("Analizando struct "+id+" limites "+(limit1-1)+" "+(limit2-1)+"...");
+        //System.out.print("Analizando struct "+id+" limites "+(limit1-1)+" "+(limit2-1)+"...");
         for (Coordinate cord :structure) {
-            //System.out.println(cord.getI()+"<"+limit1+" && "+cord.getJ()+"<"+limit2);
-            //System.out.println((cord.getI()<limit1 && cord.getJ()<limit2));
            if(!(cord.getI()<limit1 && cord.getJ()<limit2)){
-               System.out.println(" es invalida!:");
-               printInvalidStruct(limit1, limit2);
+               //System.out.println(" es invalida!:");
+               //printInvalidStruct(limit1, limit2);
                return false;
            }
         }
-        System.out.println(" es valida!");
+        //System.out.println(" es valida!");
         return true;
     }
 
+    /**
+     * Al igual que printInfoStruct, este metodo imprime una estructura pero en este caso lo hace cuando la estructura
+     * es invalida. Asigna un color rojo a la coordenada que es invalida.
+     * @param limit1 limite vertical
+     * @param limit2 limite horizontal
+     */
     public void printInvalidStruct(int limit1, int limit2 ){
         final String ANSI_RED = "\u001B[31m";
         final String ANSI_RESET = "\u001B[0m";
@@ -94,6 +129,7 @@ public class Structure {
 
     }
 
+    //getters y setters
     public ArrayList<Coordinate> getStruct() {
         return structure;
     }
