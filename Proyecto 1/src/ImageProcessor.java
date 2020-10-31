@@ -28,7 +28,7 @@ public class ImageProcessor {
 
     //Objeto para ejecutar un proceso concurrente (dilatacion o erosion)
     private ConcurrentProcessImage[] concurrentProcess;
-    private int numThreads;                 //numero de threads que se crean
+    private int numThreads = 1;                 //numero de threads que se crean PD: NUNCA DEJAR EN 0 O SE HARÁ UN BUCLE!!!
     private Integer[][] imageTemp;          //Matriz copia auxiliar
 
     public ImageProcessor(String tech_selected, int struct_selected, MatrixImage imagen) throws InterruptedException {
@@ -36,33 +36,61 @@ public class ImageProcessor {
         this.tech_selected = tech_selected;
         this.nstruct_selected = struct_selected;
         this.image = imagen;
+
+        //matrixImage es la Matriz de AtomicInteger del PGMFile
         matrixImage = imagen.getMatrix();
 
         if (this.tech_selected.equals("erosion")){
-            ArrayList<Erosion> thread = new ArrayList<Erosion>();
+            ArrayList<Erosion> thread = new ArrayList<Erosion>(); //Se hace un Arralylist de los hilos, esto para poder recorrerlos de una forma sencilla posteriormente.
+            //Se obtienen el total de las columnas y filas para el cálculo de los hilos.
+            //La cantidad de filas es la cantidad de hilos diferentes.
+            //La cantidad de columnas es hasta dónde llegará un hilo trabajando. (Recordar tener en cuenta los bordes)
             int totalRows = imagen.getRows();
             int totalColumns=imagen.getColumns();
 
-            //Pasando Matriz a una temporal
-
+            //Copiando la Matriz en otra pero de Integer, esto para tener de base al momento de hacer los cálculos (lectura)
+            //y luego escribir en la que es de AtomicInteger
             imageTemp=new Integer[totalRows][totalColumns];
-
             for (int i = 0; i < totalRows; i++) {
                 for (int j = 0; j < totalColumns; j++) {
                     imageTemp[i][j]=matrixImage[i][j].get();
                 }
             }
 
+            //Por cada fila se crea un hilo en el ArrayList
             for (int actualRow=1; actualRow<totalRows-1; actualRow++){
                 thread.add(new Erosion(imageTemp, matrixImage,actualRow,totalColumns,0));
             }
-            int actualThread=0;
 
-            while (actualThread<thread.size()){
-                thread.get(actualThread).run();
-                //thread.get(actualThread).join();
-                actualThread++;
+            //Hilo actual, esta variable recorrerá el ArrayList
+            int actualThread;
+
+            //Se recorre el ArrayList de modo que se ejecuten la cantidad de hilos definida, y una vez
+            //se termine esa ejecución, si faltan hilos, estos se hagan juntos.
+            for (actualThread = 0; actualThread+numThreads<=thread.size(); actualThread+=numThreads) {
+                for (int i = 0; i < numThreads; i++) {
+                    thread.get(actualThread+i).run();
+                }
+                for (int i = 0; i < numThreads; i++) {
+                    thread.get(actualThread+i).join();
+                }
             }
+
+            //Se realizan los hilos que faltaron, en caso que sea necesario
+            if (actualThread!=thread.size()){
+                int i = actualThread;
+
+                while (actualThread<thread.size()){
+                    thread.get(actualThread).run();
+                    actualThread++;
+                }
+
+                while (i<thread.size()){
+                    thread.get(i).join();
+                    i++;
+                }
+            }
+
         }
 
         else {
