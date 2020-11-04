@@ -22,11 +22,13 @@ public class PGMFile {
     private String name;
 
 
-    public PGMFile(String name) throws IOException {
-        this.name=name;
+    public PGMFile(File file) throws IOException {
+        this.file=file;
+        name = file.getName();
+        name = name.replaceFirst("[.][^.]+$", "");
     }
 
-    public void load(File file) throws IOException {
+    public void load() throws IOException {
         fileBuffered= new BufferedReader(new FileReader(file));
         magicNumber = fileBuffered.readLine();    //Primera línea siempre llevará el número mágico
         line = fileBuffered.readLine(); //Segunda línea puede llevar comentario o tamaño

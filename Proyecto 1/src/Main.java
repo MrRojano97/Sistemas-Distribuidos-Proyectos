@@ -5,11 +5,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         
-        PGMFile file1 = new PGMFile("baboonv2");
-        //file1.print();
-        //file1.load(new File(args[0]));
-        //file1.load(new File("src//imgNueva.pgm"));
-        file1.load(new File("src//baboon.pgm"));
+        PGMFile file1 = new PGMFile(new File(args[0]));
+        file1.load();
+        //file1.load(new File("src//baboon.pgm"));
         //file1.save("P2");
         //file1.save("P5");
 

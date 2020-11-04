@@ -101,36 +101,26 @@ public class ImageProcessor {
         //Se recorre el ArrayList de modo que se ejecuten la cantidad de hilos definida, y una vez
         //se termine esa ejecución, si faltan hilos, estos se hagan juntos.
         for (actualThread = 0; actualThread+num_threads_paralel<=total_thread_creates; actualThread+=num_threads_paralel) {
-
             for (int i = 0; i < num_threads_paralel; i++) {
-
-
-                concurrentProcess[actualThread + i].start(); //NUEVO
-
+                concurrentProcess[actualThread + i].start();
             }
             for (int i = 0; i < num_threads_paralel; i++) {
-
                 try {
-                    concurrentProcess[actualThread+i].join(); //NUEVO
+                    concurrentProcess[actualThread+i].join();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
         }
 
         //Se realizan los hilos que faltaron, en caso que sea necesario
         if (actualThread!=total_thread_creates){
             int i = actualThread;
-
             while (actualThread<total_thread_creates){
-
-                concurrentProcess[actualThread].start(); //NUEVO
+                concurrentProcess[actualThread].start();
                 actualThread++;
             }
-
             while (i<total_thread_creates){
-
                 try {
                     concurrentProcess[i].join(); //NUEVO
                 } catch (InterruptedException e) {
