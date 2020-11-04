@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ImageProcessor {
 
+    private int num_threads_paralel  ;       //Numero de threads en paralelo
     private MatrixImage image;              //Matriz generada desde la imagen
     private AtomicInteger matrixImage[][];  //Matriz de imagen generada
     private String tech_selected;           //tecnica seleccionada por el usuario
@@ -35,7 +36,7 @@ public class ImageProcessor {
         System.out.print("Iniciando procesador de imagenes..");
         this.tech_selected = tech_selected;
         this.nstruct_selected = struct_selected;
-        this.numThreads = numThreads;
+        this.num_threads_paralel = numThreads;
         this.image = imagen;
 
         //matrixImage es la Matriz de AtomicInteger del PGMFile
@@ -86,22 +87,61 @@ public class ImageProcessor {
             if(struct_selected.isStructValid(rowsMatrix,colMatrix)){
                 concurrentProcess[i] = new ConcurrentProcessImage(tech_selected, imageTemp,
                         struct_selected,row_assigned,matrixImage,colMatrix);
-                concurrentProcess[i].start();   //iniciar hilo
+                //concurrentProcess[i].start();   //iniciar hilo
             }
             else{
                 //contador de ayuda para saber cuantos hilos se omitieron.
                 threads_no_creates ++;
             }
         }
-        //Join del hilo principal
-        for (int i = 0; i < numThreads - threads_no_creates ; i++) {
-            try {
-                concurrentProcess[i].join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        long inicio = System.currentTimeMillis();
+        //Hilo actual, esta variable recorrerá el ArrayList
+        int actualThread;
+        int total_thread_creates = concurrentProcess.length-threads_no_creates;
+        //Se recorre el ArrayList de modo que se ejecuten la cantidad de hilos definida, y una vez
+        //se termine esa ejecución, si faltan hilos, estos se hagan juntos.
+        for (actualThread = 0; actualThread+num_threads_paralel<=total_thread_creates; actualThread+=num_threads_paralel) {
+
+            for (int i = 0; i < num_threads_paralel; i++) {
+
+
+                concurrentProcess[actualThread + i].start(); //NUEVO
+
+            }
+            for (int i = 0; i < num_threads_paralel; i++) {
+
+                try {
+                    concurrentProcess[actualThread+i].join(); //NUEVO
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 
+        //Se realizan los hilos que faltaron, en caso que sea necesario
+        if (actualThread!=total_thread_creates){
+            int i = actualThread;
+
+            while (actualThread<total_thread_creates){
+
+                concurrentProcess[actualThread].start(); //NUEVO
+                actualThread++;
+            }
+
+            while (i<total_thread_creates){
+
+                try {
+                    concurrentProcess[i].join(); //NUEVO
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                i++;
+            }
+        }
+        long fin = System.currentTimeMillis();
+        long tiempo = fin - inicio;
+        System.out.println("Se demoro " + tiempo + " ms");
     }
 
 }

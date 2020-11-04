@@ -46,7 +46,7 @@ public class ConcurrentProcessImage extends Thread{
         else{
             System.out.println("Error de numero de tecnica");
         }
-        System.out.println("----------- Thread "+(row_assigned+1)+" Terminado -----------");
+        //System.out.println("----------- Thread "+(row_assigned+1)+" Terminado -----------");
     }
 
     /**

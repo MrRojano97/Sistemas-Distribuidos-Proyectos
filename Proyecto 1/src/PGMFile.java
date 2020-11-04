@@ -108,11 +108,11 @@ public class PGMFile {
 
     }
 
-    public void save() {
+    public void save(String tech_selected) {
 
 
         try {
-            FileWriter fstream = new FileWriter(name + "_out_P2.pgm");
+            FileWriter fstream = new FileWriter(name + "_"+tech_selected+"_P2.pgm");
             BufferedWriter out = new BufferedWriter(fstream);
 
             //Se escribe la cabecera
